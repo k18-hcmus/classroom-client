@@ -8,6 +8,7 @@ import {
 } from '@mui/material'
 
 export default function ClassroomCard({ classroom }) {
+  console.log(classroom)
   const { name } = classroom
 
   return (

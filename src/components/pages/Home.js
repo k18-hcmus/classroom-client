@@ -4,10 +4,14 @@ import axiosClient from '../../axiosClient'
 import ClassroomCard from '../classroom/ClassroomCard'
 import AddClassroomModal from '../classroom/AddClassroomModal'
 import Layout from '../Layout'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchClassrooms } from '../../redux/classrooms/classroomsSlice'
 
 const Home = () => {
-  const [classrooms, setClassrooms] = useState([])
+  // const [classrooms, setClassrooms] = useState([])
   const [open, setOpen] = useState(false)
+  const classrooms = useSelector((state) => state.classrooms.classrooms)
+  const dispatch = useDispatch()
   const toggleModal = () => {
     setOpen((prevState) => !prevState)
   }
@@ -17,19 +21,16 @@ const Home = () => {
       name,
     })
 
-    setClassrooms((prevState) => prevState.concat(response.data))
+    // setClassrooms((prevState) => prevState.concat(response.data))
   }
 
   useEffect(() => {
     async function fetchAPI() {
-      const result = await axiosClient.get('/api/classrooms')
-      if (result) {
-        setClassrooms(result.data)
-      }
+      dispatch(fetchClassrooms())
     }
 
     fetchAPI()
-  }, [])
+  }, [dispatch])
 
   return (
     <div>
