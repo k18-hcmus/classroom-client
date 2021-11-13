@@ -25,9 +25,7 @@ const initialState = {
 const classroomsSlice = createSlice({
   name: 'classrooms',
   initialState,
-  reducers: {
-    classroomsLoaded(state, action) {},
-  },
+  reducers: {},
   extraReducers: {
     [fetchClassrooms.fulfilled]: (state, action) => {
       state.classrooms = action.payload
