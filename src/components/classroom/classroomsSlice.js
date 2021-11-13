@@ -9,6 +9,15 @@ export const fetchClassrooms = createAsyncThunk(
   }
 )
 
+export const createClassroom = createAsyncThunk(
+  'classrooms/createClassroom',
+  async (classroom) => {
+    const response = await axiosClient.post('api/classrooms', classroom)
+    console.log(response.data)
+    return response.data
+  }
+)
+
 const initialState = {
   classrooms: [],
 }
@@ -21,7 +30,10 @@ const classroomsSlice = createSlice({
   },
   extraReducers: {
     [fetchClassrooms.fulfilled]: (state, action) => {
-      state.classrooms = [...state.classrooms, ...action.payload]
+      state.classrooms = action.payload
+    },
+    [createClassroom.fulfilled]: (state, action) => {
+      state.classrooms = [action.payload, ...state.classrooms]
     },
   },
 })

@@ -5,7 +5,7 @@ import ClassroomCard from '../classroom/ClassroomCard'
 import AddClassroomModal from '../classroom/AddClassroomModal'
 import Layout from '../Layout'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchClassrooms } from '../../redux/classrooms/classroomsSlice'
+import { fetchClassrooms, createClassroom } from '../classroom/classroomsSlice'
 
 const Home = () => {
   // const [classrooms, setClassrooms] = useState([])
@@ -17,10 +17,7 @@ const Home = () => {
   }
 
   const addClassroom = async ({ name }) => {
-    const response = await axiosClient.post('/api/classrooms', {
-      name,
-    })
-
+    dispatch(createClassroom({ name: name }))
     // setClassrooms((prevState) => prevState.concat(response.data))
   }
 
