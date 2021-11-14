@@ -7,7 +7,6 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import DetailClassroom from './detailClassroom'
-import ListUsers from './listUsers/ListUsers'
 
 export default function Routes() {
   return (
@@ -25,7 +24,6 @@ export default function Routes() {
           </Route>
           <ProtectedRoute exact path="/home" component={Home} />
           <ProtectedRoute exact path="/classrooms/:id" component={DetailClassroom} />
-          <ProtectedRoute exact path="/classrooms/:id/list-users" component={ListUsers} />
 
           <Route path="/about" component={About} />
           <Route path="*">

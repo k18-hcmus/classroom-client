@@ -14,7 +14,6 @@ const DetailClassroom = () => {
   return (
     <div>
       <Layout>
-        <Link to={`/classrooms/${classroomId}/list-users`}>List User</Link>
         <h1>{classroom.name}</h1>
       </Layout>
     </div>
