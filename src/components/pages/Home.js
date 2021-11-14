@@ -29,11 +29,7 @@ const Home = () => {
   return (
     <div>
       <Layout>
-        <Button
-          variant="contained"
-          onClick={toggleModal}
-          sx={{ display: 'block', m: 2 }}
-        >
+        <Button variant="contained" onClick={toggleModal} sx={{ display: 'block', m: 2 }}>
           Add New Class
         </Button>
         <Grid container sx={{ alignItems: 'center' }}>
@@ -41,11 +37,7 @@ const Home = () => {
             <ClassroomCard key={classroom.id} classroom={classroom} />
           ))}
         </Grid>
-        <AddClassroomModal
-          open={open}
-          toggle={toggleModal}
-          addClassroom={addClassroom}
-        />
+        <AddClassroomModal open={open} toggle={toggleModal} addClassroom={addClassroom} />
       </Layout>
     </div>
   )

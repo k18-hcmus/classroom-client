@@ -1,16 +1,13 @@
 import React from 'react'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom'
-// import ProtectedRoute from './ProtectedRoute'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import ProtectedRoute from './ProtectedRoute'
 import About from './pages/About'
 import Home from './pages/Home.js'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import DetailClassroom from './detailClassroom'
+import ListUsers from './listUsers/ListUsers'
 
 export default function Routes() {
   return (
@@ -26,7 +23,10 @@ export default function Routes() {
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
-          <Route exact path="/home" component={Home} />
+          <ProtectedRoute exact path="/home" component={Home} />
+          <ProtectedRoute exact path="/classrooms/:id" component={DetailClassroom} />
+          <ProtectedRoute exact path="/classrooms/:id/list-users" component={ListUsers} />
+
           <Route path="/about" component={About} />
           <Route path="*">
             <NotFound />

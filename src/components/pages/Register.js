@@ -1,13 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Avatar,
-  Button,
-  TextField,
-  Grid,
-  Box,
-  Typography,
-  Container,
-} from '@mui/material'
+import { Avatar, Button, TextField, Grid, Box, Typography, Container } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import axiosClient from '../../axiosClient'
 import { Link, useHistory } from 'react-router-dom'
@@ -82,13 +74,7 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-              />
+              <TextField required fullWidth id="username" label="Username" name="username" />
             </Grid>
             <Grid item xs={12}>
               <TextField

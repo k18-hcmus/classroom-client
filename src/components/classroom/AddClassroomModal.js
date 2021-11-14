@@ -43,19 +43,8 @@ export default function AddClassroomModal({ open, toggle, addClassroom }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Grid
-          sx={style}
-          container
-          onSubmit={handleSubmit}
-          component="form"
-          justifyContent="right"
-        >
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            sx={{ mr: 'auto', mb: 1 }}
-          >
+        <Grid sx={style} container onSubmit={handleSubmit} component="form" justifyContent="right">
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mr: 'auto', mb: 1 }}>
             Create new Classroom
           </Typography>
           <TextField
@@ -67,12 +56,7 @@ export default function AddClassroomModal({ open, toggle, addClassroom }) {
             label="Name"
             autoFocus
           />
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={disabled}
-          >
+          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} disabled={disabled}>
             Create
           </Button>
         </Grid>

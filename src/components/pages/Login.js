@@ -40,9 +40,9 @@ export default function SignIn() {
     if (response.data.success) {
       localStorage.setItem('token', response.data.token)
 
-      axiosClient.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${localStorage.getItem('token')}`
+      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
+        'token'
+      )}`
       history.push('/home')
     }
     setDisabled(false)
@@ -66,12 +66,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Login
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
