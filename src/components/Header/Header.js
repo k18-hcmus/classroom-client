@@ -1,29 +1,49 @@
-import { AppBar, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
-import React from 'react'
+import {
+  AppBar,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+  IconButton,
+} from '@mui/material'
+import React, { useState } from 'react'
 import { useStyles } from './style'
-import { Add, Apps } from '@mui/icons-material'
-import { Avatar } from '@mui/material'
-import { useState } from 'react'
+import { Add, Apps, AccountCircle } from '@mui/icons-material'
 import CreateClass from '../classroom/components/CreateClass/CreateClass'
 import JoinClass from '../classroom/components/JoinClass/JoinClass'
+import { useHistory } from 'react-router'
+
 const Header = ({ children }) => {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const history = useHistory()
+  const [anchorElClassroom, setAnchorElClassroom] = useState(null)
+  const [anchorElProfile, setAnchorElProfile] = useState(null)
+
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
+    setAnchorElClassroom(event.currentTarget)
   }
-  const handleClose = () => {
-    setAnchorEl(null)
+  const handleCloseClassroomMenu = () => {
+    setAnchorElClassroom(null)
+  }
+  const handleCloseProfileMenu = () => {
+    setAnchorElProfile(null)
+  }
+  const handleMenuProfile = (event) => {
+    setAnchorElProfile(event.currentTarget)
   }
   const [createClassDialog, setCreateClassDialog] = useState(false)
   const [joinClassDialog, setJoinClassDialog] = useState(false)
   const handleCreate = () => {
-    handleClose()
+    handleCloseClassroomMenu()
     setCreateClassDialog(true)
   }
   const handleJoin = () => {
-    handleClose()
+    handleCloseClassroomMenu()
     setJoinClassDialog(true)
+  }
+  const handleLogout = () => {
+    localStorage.clear()
+    history.push('/login')
   }
   return (
     <div className={classes.root}>
@@ -31,29 +51,43 @@ const Header = ({ children }) => {
         <Toolbar className={classes.toolbar}>
           <div className={classes.headerWrapper}>
             {children}
-            <img
-              src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
-              alt="Classroom"
-            />
             <Typography variant="h6" className={classes.title}>
               Classroom
             </Typography>
           </div>
           <div className={classes.header_wrapper_right}>
             <Add className={classes.icon} onClick={handleClick} />
-            <Apps className={classes.icon} />
             <Menu
               id="simple-menu"
-              anchorEl={anchorEl}
+              anchorEl={anchorElClassroom}
               keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+              open={Boolean(anchorElClassroom)}
+              onClose={handleCloseClassroomMenu}
             >
               <MenuItem onClick={handleJoin}>Join class</MenuItem>
               <MenuItem onClick={handleCreate}>Create class</MenuItem>
             </Menu>
             <div>
-              <Avatar className={classes.icon} />
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenuProfile}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElProfile}
+                keepMounted
+                open={Boolean(anchorElProfile)}
+                onClose={handleCloseProfileMenu}
+              >
+                <MenuItem onClick={handleCloseProfileMenu}>Profile</MenuItem>
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
+              </Menu>
             </div>
           </div>
         </Toolbar>
