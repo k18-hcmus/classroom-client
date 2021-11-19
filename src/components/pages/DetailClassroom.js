@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
 } from '@mui/material'
+import { Link, useParams } from 'react-router-dom'
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein }
@@ -24,8 +25,8 @@ const rows = [
 ]
 
 function DetailClassroom() {
-  const user = useSelector((state) => state.user)
-  console.log(user)
+  const { id } = useParams()
+  console.log(id)
   return (
     <Layout>
       <TableContainer component={Paper}>
@@ -57,6 +58,7 @@ function DetailClassroom() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Link to={`/classrooms/${id}/user-list`}>User list</Link>
     </Layout>
   )
 }

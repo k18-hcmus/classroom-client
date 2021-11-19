@@ -13,6 +13,8 @@ import Login from './authentication/Login'
 import ActivationEmail from './authentication/ActivationEmail'
 import NotFound from './pages/NotFound'
 import DetailClassroom from './pages/DetailClassroom'
+import JoinClassroom from './classroom/JoinClassroom'
+import UserList from './classroom/UserList'
 export default function Routes() {
   return (
     <Router>
@@ -32,7 +34,18 @@ export default function Routes() {
           </Route>
           <ProtectedRoute exact path="/home" component={Home} />
           <ProtectedRoute path="/about" component={About} />
-          <ProtectedRoute path="/classrooms/:id" component={DetailClassroom} />
+          <ProtectedRoute path="/classrooms/join" component={JoinClassroom} />
+
+          <ProtectedRoute
+            exact
+            path="/classrooms/:id"
+            component={DetailClassroom}
+          />
+          <ProtectedRoute
+            exact
+            path="/classrooms/:id/user-list"
+            component={UserList}
+          />
           <Route path="*">
             <NotFound />
           </Route>
