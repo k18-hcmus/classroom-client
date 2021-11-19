@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
-
 import List from '@mui/material/List'
 import Divider from '@mui/material/Divider'
 import ListItem from '@mui/material/ListItem'
@@ -11,7 +10,6 @@ import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import { IconButton } from '@mui/material'
 import ClassIcon from '@mui/icons-material/Class'
-
 import MenuIcon from '@mui/icons-material/Menu'
 import Header from '../Header/Header'
 import { useStyles } from '../Header/style'
@@ -49,7 +47,7 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {itemClass.map((item, index) => {
+        {itemClass.map((item) => {
           const { text, icon } = item
           return (
             <ListItem button key={text}>

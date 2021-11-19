@@ -2,23 +2,24 @@ import React, { useEffect, useState } from 'react'
 import Header from 'src/components/Header/Header'
 import axiosClient from 'src/axiosClient'
 import { useParams } from 'react-router-dom'
-import { Grid, Typography } from '@mui/material'
+import { Grid, Typography, Container } from '@mui/material'
 import partition from 'lodash/partition'
 import ListUsers from './List/ListUsers'
-import styled from '@emotion/styled'
-
-const UserListContainer = styled(Grid)`
-  flex-direction: column;
-`
+import { Redirect } from 'react-router-dom'
 
 const UserList = () => {
   const [users, setUsers] = useState([])
+  const [errorMsg, setErrorMsg] = useState('')
   const { id } = useParams()
 
   useEffect(() => {
     const fetchUserClassrooms = async () => {
-      const response = await axiosClient.get(`/api/classrooms/${id}/users`)
-      setUsers(response.data)
+      try {
+        const response = await axiosClient.get(`/api/classrooms/${id}/users`)
+        setUsers(response.data)
+      } catch (error) {
+        setErrorMsg(error.response.data.message)
+      }
     }
 
     fetchUserClassrooms()
@@ -27,7 +28,7 @@ const UserList = () => {
 
   const renderTeachersList = () => {
     return (
-      <Grid item xs={12} md={6}>
+      <Grid>
         <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
           Teacher
         </Typography>
@@ -38,7 +39,7 @@ const UserList = () => {
 
   const renderStudentsList = () => {
     return (
-      <Grid item xs={12} md={6}>
+      <Grid sx={{ flexGrow: 1, maxWidth: '100%' }}>
         <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
           Student
         </Typography>
@@ -48,11 +49,15 @@ const UserList = () => {
   }
   return (
     <>
-      <Header></Header>
-      <UserListContainer container spacing={2}>
-        {renderTeachersList()}
-        {renderStudentsList()}
-      </UserListContainer>
+      <Header />
+      {errorMsg ? (
+        <Redirect to="/" />
+      ) : (
+        <Container maxWidth="lg" spacing={2}>
+          {renderTeachersList()}
+          {renderStudentsList()}
+        </Container>
+      )}
     </>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useLocation, Redirect, useHistory } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import axiosClient from '../../../axiosClient'
 import Header from '../../Header/Header'
 import { Box, Button, CircularProgress } from '@mui/material'

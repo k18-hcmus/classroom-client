@@ -8,11 +8,17 @@ import {
 } from '@mui/material'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import styled from '@emotion/styled'
+
+const CustomList = styled(List)`
+  max-height: 400px;
+  overflow: auto;
+`
 
 const ListUsers = ({ users }) => {
   if (users && !isEmpty(users))
     return (
-      <List>
+      <CustomList>
         {users.map((u) => (
           <ListItem>
             <ListItemAvatar>
@@ -21,7 +27,7 @@ const ListUsers = ({ users }) => {
             <ListItemText primary={get(u, 'User.username')} />
           </ListItem>
         ))}
-      </List>
+      </CustomList>
     )
   else {
     return <p>Empty</p>

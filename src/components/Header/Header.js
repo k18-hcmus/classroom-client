@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import React, { useState } from 'react'
 import { useStyles } from './style'
-import { Add, Apps, AccountCircle } from '@mui/icons-material'
+import { Add, AccountCircle } from '@mui/icons-material'
 import CreateClass from '../classroom/components/CreateClass/CreateClass'
 import JoinClass from '../classroom/components/JoinClass/JoinClass'
 import { useHistory } from 'react-router'
