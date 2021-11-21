@@ -79,7 +79,7 @@ export default function SignIn() {
       }
     } catch (err) {
       console.log(err)
-      err.response.data.msg &&
+      err.response.data.message &&
         setMsg({ err: err.response.data.message, success: '' })
     }
     setDisabled(false)
