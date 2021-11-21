@@ -14,8 +14,10 @@ import ActivationEmail from './authentication/ActivationEmail'
 import NotFound from './pages/NotFound'
 import DetailClassroom from './pages/DetailClassroom'
 import JoinClassroom from './classroom/JoinClassroom'
+import AcceptInvite from './classroom/AcceptInvite'
 import UserList from './classroom/UserList'
 import Profile from './Profile'
+
 export default function Routes() {
   return (
     <Router>
@@ -36,8 +38,16 @@ export default function Routes() {
           <ProtectedRoute exact path="/home" component={Home} />
           <ProtectedRoute path="/about" component={About} />
           <ProtectedRoute path="/profile" component={Profile} />
-          <ProtectedRoute path="/classrooms/join" component={JoinClassroom} />
-
+          <ProtectedRoute
+            exact
+            path="/classrooms/join"
+            component={JoinClassroom}
+          />
+          <ProtectedRoute
+            exact
+            path="/classrooms/join/accept-token"
+            component={AcceptInvite}
+          />
           <ProtectedRoute
             exact
             path="/classrooms/:id"

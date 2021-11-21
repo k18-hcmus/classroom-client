@@ -23,7 +23,6 @@ import {
 } from '@mui/material'
 
 const MyContainer = styled(Container)({
-  marginLeft: '90px',
   marginTop: '30px',
 })
 const MyCard = styled(Card)({
@@ -33,9 +32,7 @@ const LinkCard = styled(Card)({
   maxWidth: 300,
   marginTop: 30,
 })
-const MyCardActions = styled(CardActions)({
-  marginLeft: '950px',
-})
+const MyCardActions = styled(CardActions)({})
 const WorkCard = styled(Card)({
   marginTop: 30,
   marginLeft: 0,

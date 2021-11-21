@@ -1,17 +1,23 @@
-import { AppBar, Menu, MenuItem, Toolbar, Typography, Box } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
+import {
+  AppBar,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Avatar,
+} from '@mui/material'
 import { Add, Apps } from '@mui/icons-material'
-import { Avatar } from '@mui/material'
-import { useState } from 'react'
 import CreateClass from '../classroom/components/CreateClass/CreateClass'
 import JoinClass from '../classroom/components/JoinClass/JoinClass'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
-import { IconButton } from '@mui/material'
-import { AccountCircle } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { userLogout } from 'src/redux/userSlice'
 import accountDefault from 'src/_mocks_/account'
+
 const HeaderWrapper = styled.div({
   display: 'flex',
   alignItems: 'center',
@@ -26,7 +32,6 @@ const MyAppBar = styled(AppBar)({
   color: 'black',
 })
 const MyAvatar = styled(Avatar)({
-  marginRight: '15px',
   color: '#5f656d',
   cursor: 'pointer',
 })
