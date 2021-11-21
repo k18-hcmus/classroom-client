@@ -7,12 +7,12 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   return response.data
 })
 export const updateUser = createAsyncThunk('users/updateUser', async (User) => {
-  const response = await axiosClient.put('api/user', User)
+  const response = await axiosClient.put('/api/user', User)
   return response.data
 })
 
 const initialState = {
-  user: [],
+  user: {},
   isLogged: false,
   message: '',
 }
@@ -21,8 +21,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    userLogin: (state) => {
+    userLogin: (state, action) => {
       state.isLogged = true
+      state.user = action.payload
     },
     userLogout: (state) => {
       state.user = undefined

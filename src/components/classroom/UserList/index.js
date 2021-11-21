@@ -63,7 +63,6 @@ const UserList = () => {
     setUsers((prevState) => [...prevState, newUser])
   }
 
-  console.log(users)
   const renderTeachersList = () => {
     return (
       <Grid>
