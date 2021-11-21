@@ -78,7 +78,6 @@ export default function SignIn() {
         setMsg({ err: response.data.message, success: '' })
       }
     } catch (err) {
-      console.log(err)
       err.response.data.message &&
         setMsg({ err: err.response.data.message, success: '' })
     }
