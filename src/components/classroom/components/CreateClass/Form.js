@@ -30,7 +30,6 @@ export default function Form({ addClassroom }) {
     }
     try {
       await addClassroom({ name, section, subject })
-      console.log(name, section, subject)
     } catch (err) {
       alert(err)
     }
@@ -38,15 +37,12 @@ export default function Form({ addClassroom }) {
 
   const handleChangeName = (e) => {
     setName(e.target.value)
-    console.log(name)
   }
   const handleChangeSection = (e) => {
     setSection(e.target.value)
-    console.log(section)
   }
   const handleChangeSubject = (e) => {
     setSubject(e.target.value)
-    console.log(subject)
   }
   return (
     <Box
