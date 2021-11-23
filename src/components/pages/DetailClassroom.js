@@ -90,7 +90,10 @@ function DetailClassroom() {
           </Typography>
         </CardContent>
         <CardActions>
-          <CopyToClipboard text={classroom.id} onCopy={() => setCopyLink(true)}>
+          <CopyToClipboard
+            text={`${process.env.REACT_APP_CLIENT_URL}/classrooms/join?id=${classCode}`}
+            onCopy={() => setCopyLink(true)}
+          >
             <Button size="large">copy link</Button>
           </CopyToClipboard>
         </CardActions>
