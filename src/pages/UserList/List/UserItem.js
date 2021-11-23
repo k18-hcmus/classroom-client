@@ -14,7 +14,7 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import styled from '@emotion/styled'
 import get from 'lodash/get'
-import { showErrMsg } from 'src/components/utils/Notifications'
+import { showErrMsg } from 'src/utils/Notifications'
 import axiosClient from 'src/axiosClient'
 
 const StatusText = styled('p')`
@@ -27,6 +27,7 @@ const UserItem = ({ user, removeUser }) => {
   const [open, setOpen] = useState(false)
   const [errMsg, setErrMsg] = useState('')
   const userRole = useSelector((state) => state.user.role)
+  const userState = useSelector((state) => state.user.user)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -54,7 +55,8 @@ const UserItem = ({ user, removeUser }) => {
 
   const renderDeleteButton = () => {
     return (
-      userRole === 'TEACHER' && (
+      userRole === 'TEACHER' &&
+      user.userId !== userState.id && (
         <IconButton onClick={handleClickOpen}>
           <DeleteIcon />
         </IconButton>
