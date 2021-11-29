@@ -124,7 +124,7 @@ function DetailClassroom() {
   }
   const handleEditGrade = (event) => {
     event.preventDefault()
-    history.push('/gradeStructure')
+    history.push(`/classrooms/${id}/grade`)
   }
   return (
     <Layout>

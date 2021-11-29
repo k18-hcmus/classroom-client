@@ -60,7 +60,7 @@ export default function Routes() {
           />
           <ProtectedRoute
             exact
-            path="/gradeStructure"
+            path="/classrooms/:id/grade"
             component={GradeAssignment}
           />
           <Route path="*">

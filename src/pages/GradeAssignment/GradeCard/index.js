@@ -1,27 +1,95 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { Button, Card, CardContent, Grid, TextField } from '@mui/material'
 import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material'
 import { styled } from '@mui/styles'
+import axiosClient from 'src/axiosClient'
+import { useParams } from 'react-router-dom'
+
 const FormButtonEdit = styled(Button)({
   padding: '30px 5px',
   borderRadius: '0px 4px 0px 0px',
 })
+
 const FormButtonRemove = styled(Button)({
   padding: '30px 3px',
   borderRadius: '0px 0px 4px 0px',
 })
-export default function GradeCard({ grade }) {
-  const { gradeTitle, id, gradeDetail } = grade
+
+export default function GradeCard({
+  grade,
+  updateAssignment,
+  deleteAssignment: propsDeleteAssignment,
+}) {
+  const [disabled, setDisabled] = useState(true)
+  const mainRef = useRef(null)
+  const { id: classroomId } = useParams()
+
+  const { name, point } = grade
+
+  const toggleEdit = async () => {
+    if (!disabled) {
+      await saveAssignment()
+    }
+    setDisabled((prevState) => !prevState)
+  }
+
+  useEffect(() => {
+    if (grade.isNew) {
+      mainRef.current.focus()
+      setDisabled(false)
+    }
+  }, [mainRef, grade.isNew])
+
+  const deleteAssignment = async () => {
+    if (!grade.isNew) {
+      await axiosClient.delete(
+        `/api/classrooms/${classroomId}/grades/${grade.id}`
+      )
+    }
+
+    propsDeleteAssignment(grade.id)
+  }
+
+  const saveAssignment = async () => {
+    if (grade.isNew) {
+      try {
+        const response = await axiosClient.post(
+          `/api/classrooms/${classroomId}/grades`,
+          {
+            name: 'test',
+            point: 1.5,
+          }
+        )
+        updateAssignment(grade.id, response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      try {
+        await axiosClient.put(
+          `/api/classrooms/${classroomId}/grades/${grade.id}`,
+          {
+            name: 'test update',
+            point: 1,
+          }
+        )
+        updateAssignment(grade.id, { ...grade, name: 'test update', point: 1 })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   return (
-    <Card sx={{ minWidth: 650, maxWidth: 650, m: 1 }}>
+    <Card
+      sx={{ minWidth: 650, maxWidth: 650, m: 1 }}
+      ref={mainRef}
+      tabIndex="0"
+    >
       <Grid
         container
         direction="row"
@@ -34,26 +102,36 @@ export default function GradeCard({ grade }) {
             <TextField
               fullWidth
               variant="outlined"
-              disabled={true}
+              disabled={disabled}
               label="Grade Title"
-              defaultValue={gradeTitle}
+              value={grade.name}
             ></TextField>
           </CardContent>
           <CardContent sx={{ marginTop: -2 }}>
             <TextField
               fullWidth
               variant="outlined"
-              disabled={true}
+              disabled={disabled}
               label="Grade Detail"
-              defaultValue={gradeDetail}
+              defaultValue={point}
+              value={grade.point}
             ></TextField>
           </CardContent>
         </Grid>
         <Grid item xs={1.5}>
-          <FormButtonEdit variant="contained">
-            <EditIcon />
+          <FormButtonEdit
+            variant="contained"
+            onClick={toggleEdit}
+            color={!disabled && 'success'}
+          >
+            {disabled ? <EditIcon /> : <SaveIcon />}
           </FormButtonEdit>
-          <FormButtonRemove color="error" fullWidth variant="contained">
+          <FormButtonRemove
+            color="error"
+            fullWidth
+            variant="contained"
+            onClick={deleteAssignment}
+          >
             <DeleteIcon />
           </FormButtonRemove>
         </Grid>
