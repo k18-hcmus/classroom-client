@@ -63,6 +63,7 @@ const GradeAssignment = () => {
       name: '',
       point: '',
       isNew: true,
+      index: listgrade.length,
     }
     setListgrade((prevState) => [...prevState, newAssignment])
   }

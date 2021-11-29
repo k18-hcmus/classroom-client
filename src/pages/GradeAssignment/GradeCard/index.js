@@ -62,6 +62,7 @@ export default function GradeCard({
           {
             name,
             point,
+            index: grade.index,
           }
         )
         updateAssignment(grade.id, response.data)
