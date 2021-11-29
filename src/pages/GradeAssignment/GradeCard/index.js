@@ -8,6 +8,7 @@ import {
 import { styled } from '@mui/styles'
 import axiosClient from 'src/axiosClient'
 import { useParams } from 'react-router-dom'
+import { showErrMsg } from 'src/utils/Notifications'
 
 const FormButtonEdit = styled(Button)({
   padding: '30px 5px',
@@ -28,21 +29,20 @@ export default function GradeCard({
   const mainRef = useRef(null)
   const { id: classroomId } = useParams()
 
-  const { name, point } = grade
+  const [name, setName] = useState(grade.name)
+  const [point, setPoint] = useState(grade.point)
+  const [error, setError] = useState()
 
   const toggleEdit = async () => {
-    if (!disabled) {
-      await saveAssignment()
+    if (!name || !point) {
+      setError('name and point is required!')
+    } else {
+      if (!disabled) {
+        await saveAssignment()
+      }
+      setDisabled((prevState) => !prevState)
     }
-    setDisabled((prevState) => !prevState)
   }
-
-  useEffect(() => {
-    if (grade.isNew) {
-      mainRef.current.focus()
-      setDisabled(false)
-    }
-  }, [mainRef, grade.isNew])
 
   const deleteAssignment = async () => {
     if (!grade.isNew) {
@@ -60,8 +60,8 @@ export default function GradeCard({
         const response = await axiosClient.post(
           `/api/classrooms/${classroomId}/grades`,
           {
-            name: 'test',
-            point: 1.5,
+            name,
+            point,
           }
         )
         updateAssignment(grade.id, response.data)
@@ -73,8 +73,8 @@ export default function GradeCard({
         await axiosClient.put(
           `/api/classrooms/${classroomId}/grades/${grade.id}`,
           {
-            name: 'test update',
-            point: 1,
+            name,
+            point,
           }
         )
         updateAssignment(grade.id, { ...grade, name: 'test update', point: 1 })
@@ -84,12 +84,30 @@ export default function GradeCard({
     }
   }
 
+  const handleChangeName = (e) => {
+    setName(e.target.value)
+    setError('')
+  }
+
+  const handleChangePoint = (e) => {
+    setPoint(e.target.value)
+    setError('')
+  }
+
+  useEffect(() => {
+    if (grade.isNew) {
+      mainRef.current.focus()
+      setDisabled(false)
+    }
+  }, [mainRef, grade.isNew])
+
   return (
     <Card
       sx={{ minWidth: 650, maxWidth: 650, m: 1 }}
       ref={mainRef}
       tabIndex="0"
     >
+      {error && showErrMsg(error)}
       <Grid
         container
         direction="row"
@@ -104,7 +122,9 @@ export default function GradeCard({
               variant="outlined"
               disabled={disabled}
               label="Grade Title"
-              value={grade.name}
+              value={name}
+              onChange={handleChangeName}
+              required={true}
             ></TextField>
           </CardContent>
           <CardContent sx={{ marginTop: -2 }}>
@@ -113,8 +133,10 @@ export default function GradeCard({
               variant="outlined"
               disabled={disabled}
               label="Grade Detail"
-              defaultValue={point}
-              value={grade.point}
+              value={point}
+              onChange={handleChangePoint}
+              type="number"
+              required={true}
             ></TextField>
           </CardContent>
         </Grid>
