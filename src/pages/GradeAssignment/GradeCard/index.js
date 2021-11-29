@@ -86,13 +86,17 @@ export default function GradeCard({
   }
 
   const handleChangeName = (e) => {
-    setName(e.target.value)
+    if (e.target.value.length < 255) {
+      setName(e.target.value)
+    }
     setError('')
   }
 
   const handleChangePoint = (e) => {
-    setPoint(e.target.value)
-    setError('')
+    if (e.target.value.length < 255) {
+      setPoint(e.target.value)
+      setError('')
+    }
   }
 
   useEffect(() => {
