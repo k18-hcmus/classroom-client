@@ -149,7 +149,7 @@ export default function GradeCard({
           <FormButtonEdit
             variant="contained"
             onClick={toggleEdit}
-            color={!disabled && 'success'}
+            color={disabled ? 'primary' : 'success'}
           >
             {disabled ? <EditIcon /> : <SaveIcon />}
           </FormButtonEdit>

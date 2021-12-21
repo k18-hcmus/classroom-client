@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import axiosClient from 'src/axiosClient'
-import { useParams, Redirect, useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import {
   Grid,
   Typography,
-  Container,
   Button,
   Box,
   Card,
-  CardContent,
   CardHeader,
   IconButton,
   Avatar,
@@ -31,8 +29,10 @@ import lodashGet from 'lodash/get'
 import { useSnackbar } from 'notistack'
 import NoDataDisplay from 'src/components/NoDataDisplay'
 import LoadingPage from 'src/components/LoadingPage'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { showDialogMsg } from 'src/utils/Notifications'
+import DownloadCSV from './DownloadCSV'
+import * as XLSX from 'xlsx'
+
 const CustomCard = styled(Card)`
   &.sticky {
     position: sticky;
@@ -83,10 +83,31 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
         : 'rgba(255,255,255,0.65)',
   },
 }))
+
 const ButtonMenuTable = styled(Button)({
   justifyContent: 'flex-start',
   color: '#000000',
 })
+
+const readExcel = (file) => {
+  const promise = new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.readAsArrayBuffer(file)
+    fileReader.onload = (e) => {
+      const bufferArray = e.target.result
+      const wb = XLSX.read(bufferArray, { type: 'buffer' })
+      const wsname = wb.SheetNames[0]
+      const ws = wb.Sheets[wsname]
+      const data = XLSX.utils.sheet_to_json(ws)
+      resolve(data)
+    }
+    fileReader.onerror = (error) => {
+      reject(error)
+    }
+  })
+  return promise
+}
+
 function CustomColumnMenuComponent(props) {
   const { hideMenu, currentColumn } = props
   if (
@@ -103,6 +124,7 @@ function CustomColumnMenuComponent(props) {
       </GridColumnMenuContainer>
     )
   }
+
   return (
     <GridColumnMenuContainer hideMenu={hideMenu} currentColumn={currentColumn}>
       <Box
@@ -111,7 +133,36 @@ function CustomColumnMenuComponent(props) {
           height: '100%',
         }}
       >
-        <ButtonMenuTable fullWidth>Upload grades</ButtonMenuTable>
+        <ButtonMenuTable fullWidth>
+          <label>
+            <input
+              style={{ display: 'none' }}
+              id={currentColumn.field}
+              type="file"
+              onChange={async (e) => {
+                const gradeId = e.target.id
+                const file = e.target.files[0]
+                const uploadedData = await readExcel(file)
+
+                // Uploaded data will have value like: studentId: number, point: number
+                props.enqueueSnackbar(
+                  'Set grade success, please Save Grades to update',
+                  {
+                    variant: 'info',
+                  }
+                )
+                props.handleUploadedGrades(gradeId, uploadedData)
+              }}
+            />
+            Upload grade
+          </label>
+        </ButtonMenuTable>
+
+        <DownloadCSV
+          data={props.rows}
+          id={currentColumn.field}
+          filename={currentColumn.headerName}
+        ></DownloadCSV>
         <ButtonMenuTable
           id={currentColumn.field}
           onClick={props.handleSaveGrades}
@@ -130,6 +181,7 @@ function CustomColumnMenuComponent(props) {
     </GridColumnMenuContainer>
   )
 }
+
 const DetailGrades = () => {
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
@@ -168,9 +220,15 @@ const DetailGrades = () => {
       ),
     },
   ])
+
   const handleCloseDialog = () => {
     setDialogMsg(null)
   }
+
+  const goBack = () => {
+    history.goBack()
+  }
+
   const handleMarkGrades = async (event) => {
     event.preventDefault()
     const gradeId = event.target.id
@@ -193,14 +251,44 @@ const DetailGrades = () => {
       enqueueSnackbar(error.message, { variant: 'error' })
     }
   }
+
+  const handleUploadedGrades = async (gradeId, data) => {
+    setRows((prevState) => {
+      return prevState.map((gradeUser) => {
+        const studentId = gradeUser.studentId
+
+        // find the student have studentId in uploaded data
+        const uploadedStudent = data.find((d) => d.studentId == studentId)
+
+        let newPoint
+        if (uploadedStudent) {
+          newPoint = uploadedStudent.point
+        } else {
+          return { ...gradeUser }
+        }
+
+        // find the grade currently editing to check valid point
+        const gradeEdited = listGradeStudent.find((g) => g.id == gradeId)
+
+        if (newPoint > gradeEdited.point) {
+          return { ...gradeUser, [gradeId]: null }
+        } else {
+          return { ...gradeUser, [gradeId]: newPoint }
+        }
+      })
+    })
+  }
+
   const handleSaveGrades = async (event) => {
     event.preventDefault()
     const field = event.target.id
+
     const colGrades = rows.map((row) => {
       const { id } = row
       const point = row[field]
       return { userId: id, point: point }
     })
+
     try {
       const response = await axiosClient.post(
         `/api/classrooms/${id}/grades/${field}`,
@@ -222,9 +310,7 @@ const DetailGrades = () => {
       enqueueSnackbar(error.message, { variant: 'error' })
     }
   }
-  const goBack = () => {
-    history.goBack()
-  }
+
   const updateTotalGrades = (rows) => {
     rows.forEach((row) => {
       let totalGradeRow = 0
@@ -249,6 +335,7 @@ const DetailGrades = () => {
       )
     })
   }
+
   const handleCommitCell = async (params) => {
     const gradeEdited = listGradeStudent.filter((g) => g.id === params.field)
     if (params.value > gradeEdited[0].point) {
@@ -260,15 +347,18 @@ const DetailGrades = () => {
       enqueueSnackbar('Grade input out of total grade', { variant: 'error' })
       return
     }
+
     setRows((prev) =>
       prev.map((row) =>
         row.id === params.id ? { ...row, [params.field]: params.value } : row
       )
     )
+
     enqueueSnackbar('Set grade success, please Save Grades to update', {
       variant: 'info',
     })
   }
+
   const renderTableGrade = (rows) => (
     <div style={{ height: 400, width: '100%' }}>
       <div style={{ display: 'flex', height: '100%' }}>
@@ -288,13 +378,20 @@ const DetailGrades = () => {
               ColumnMenu: CustomColumnMenuComponent,
             }}
             componentsProps={{
-              columnMenu: { handleSaveGrades, handleMarkGrades },
+              columnMenu: {
+                handleSaveGrades,
+                handleMarkGrades,
+                handleUploadedGrades,
+                enqueueSnackbar,
+                rows,
+              },
             }}
           />
         </div>
       </div>
     </div>
   )
+
   const createColTable = (g, editable) => {
     const col = {
       field: g.id,
@@ -350,6 +447,7 @@ const DetailGrades = () => {
     }
     return col
   }
+
   const mapUser = [
     'User.id',
     'User.username',
@@ -357,7 +455,9 @@ const DetailGrades = () => {
     'User.lastName',
     'point',
     'User.picture',
+    'User.studentId',
   ]
+
   let keymapUser = {
     'User.id': 'id',
     'User.username': 'username',
@@ -366,6 +466,7 @@ const DetailGrades = () => {
     'User.studentId': 'studentId',
     'User.picture': 'picture',
   }
+
   useEffect(() => {
     const getGradeDetail = async () => {
       try {
@@ -438,6 +539,7 @@ const DetailGrades = () => {
     }
     getGradeDetail()
   }, [])
+
   return (
     <Layout>
       <Box
