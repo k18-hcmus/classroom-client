@@ -9,7 +9,12 @@ import {
   Box,
   IconButton,
 } from '@mui/material'
-import { AddSharp, ArrowBackIosNew } from '@mui/icons-material'
+import {
+  AddSharp,
+  ArrowBackIosNew,
+  FileDownload,
+  FileUpload,
+} from '@mui/icons-material'
 import partition from 'lodash/partition'
 import ListUsers from './List/ListUsers'
 import InviteModal from './InviteModal'
@@ -19,11 +24,11 @@ import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { CSVLink } from 'react-csv'
 import * as XLSX from 'xlsx'
+import { useSnackbar } from 'notistack'
 
 const headersCSV = [
-  { label: 'firstName', key: 'User.firstName' },
-  { label: 'lastName', key: 'User.lastName' },
   { label: 'studentId', key: 'User.studentId' },
+  { label: 'fullName', key: 'fullName' },
 ]
 
 const Header = styled('div')`
@@ -32,11 +37,28 @@ const Header = styled('div')`
   margin-top: 24px;
   box-shadow: 0 6px 4px -4px rgb(0 0 0 / 20%);
 `
-const CSVrender = styled('div')`
-  margin-left: 10px;
+
+const CSVrender = styled('div')``
+
+const CustomCSVLink = styled(CSVLink)`
+  margin-left: 20px;
+  border-radius: 5px;
+  border: 1px solid;
   padding: 10px;
-  border-radius: 10px;
+  text-decoration: none;
+  color: #000;
+  display: flex;
 `
+
+const CustomLabel = styled('label')`
+  margin-left: 20px;
+  border-radius: 5px;
+  border: 1px solid;
+  padding: 10px;
+  color: #000;
+  display: flex;
+`
+
 const UserList = () => {
   const [users, setUsers] = useState([])
   const [errorMsg, setErrorMsg] = useState('')
@@ -47,6 +69,8 @@ const UserList = () => {
   const history = useHistory()
   const [exportData, setExportData] = useState([])
   const [dataArr, setDataArr] = useState([])
+  const { enqueueSnackbar } = useSnackbar()
+
   useEffect(() => {
     const fetchUserClassrooms = async () => {
       try {
@@ -93,21 +117,27 @@ const UserList = () => {
     )
   }
 
-  const userData = exportData.map((user) =>
-    _.pick(user, ['User.firstName', 'User.lastName', 'User.studentId'])
-  )
+  const userData = exportData
+    .filter((user) => _.get(user, 'User.studentId', ''))
+    .map((user) => _.pick(user, ['User.studentId', 'fullName']))
+
   const userId = exportData.map((user) => _.pick(user, ['User.id']))
+
   for (let i = 0; i < userId.length; i++) {
     userId[i].id = userId[i]['User.id']
     delete userId[i]['User.id']
   }
+
   for (let i = 0; i < userId.length; i++) {
     _.extend(dataArr[i], userId[i])
   }
 
   const updateUserImport = async (data) => {
     try {
-      await axiosClient.post('/api/user/allUser', data)
+      const response = await axiosClient.post(`/api/classrooms/${id}/upload`, {
+        data,
+      })
+      enqueueSnackbar(response.data.message, { variant: 'success' })
     } catch (error) {
       console.log(error)
     }
@@ -130,7 +160,6 @@ const UserList = () => {
         const ws = wb.Sheets[wsname]
         const data = XLSX.utils.sheet_to_json(ws)
         resolve(data)
-        setDataArr(data)
       }
       fileReader.onerror = (error) => {
         reject(error)
@@ -138,22 +167,27 @@ const UserList = () => {
     })
     return promise
   }
+
   const RenderCSVReader = () => {
     return (
-      <>
-        <CSVrender>
+      <CSVrender>
+        <CustomLabel>
           <input
+            style={{ display: 'none' }}
             type="file"
             onChange={async (e) => {
               const file = e.target.files[0]
               const uploadedData = await readExcel(file)
               updateUserImport(uploadedData)
             }}
-          ></input>
-        </CSVrender>
-      </>
+          />
+          <FileUpload />
+          <span>Import Data</span>
+        </CustomLabel>
+      </CSVrender>
     )
   }
+
   const renderTeachersList = () => {
     return (
       <Grid>
@@ -177,11 +211,22 @@ const UserList = () => {
       </Grid>
     )
   }
+
   const renderExcelFile = () => {
     return (
-      <Button variant="outlined" sx={{ ml: 3 }}>
-        <CSVLink {...csvReport}>Export Data</CSVLink>
-      </Button>
+      <CustomCSVLink {...csvReport}>
+        <FileDownload />
+        Export Data
+      </CustomCSVLink>
+    )
+  }
+
+  const renderImportExport = () => {
+    return (
+      <>
+        {renderExcelFile()}
+        {RenderCSVReader()}
+      </>
     )
   }
   const renderStudentsList = () => {
@@ -220,8 +265,7 @@ const UserList = () => {
             <Typography sx={{ mt: 2, mb: 2 }} variant="h6" component="div">
               List Users
             </Typography>
-            {userRole === 'TEACHER' && renderExcelFile()}
-            {RenderCSVReader()}
+            {userRole === 'TEACHER' && renderImportExport()}
           </Header>
           {renderTeachersList()}
           {renderStudentsList()}
