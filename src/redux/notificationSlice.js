@@ -40,7 +40,6 @@ const notificationsSlice = createSlice({
         (n) => n.id === updatedNoti.id
       )
       updatedNotis[updatedIndex] = updatedNoti
-      // console.log(updatedNotis)
       state.notifications = updatedNotis
     },
   },
