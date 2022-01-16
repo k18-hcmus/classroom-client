@@ -84,7 +84,7 @@ export default function NotificationPopover() {
       >
         <Header>
           <Typography variant="h6">Notifications</Typography>
-          <Link
+          {/* <Link
             component="button"
             variant="body2"
             onClick={() => {
@@ -92,7 +92,7 @@ export default function NotificationPopover() {
             }}
           >
             View All
-          </Link>
+          </Link> */}
         </Header>
 
         <Divider />

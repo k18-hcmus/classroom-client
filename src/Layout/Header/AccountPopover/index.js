@@ -19,6 +19,7 @@ import accountDefault from 'src/_mocks_/account'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { userLogout } from 'src/redux/userSlice'
+import { disconnectSocket } from 'src/socket'
 
 export default function AccountPopover() {
   const anchorRef = useRef(null)
@@ -37,6 +38,7 @@ export default function AccountPopover() {
 
   const handleLogout = () => {
     localStorage.clear()
+    disconnectSocket()
     history.push('/login')
     dispatch(userLogout())
   }
