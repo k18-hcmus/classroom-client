@@ -16,6 +16,7 @@ import styled from '@emotion/styled'
 import get from 'lodash/get'
 import { showErrMsg } from 'src/utils/Notifications'
 import axiosClient from 'src/axiosClient'
+import accountDefault from 'src/_mocks_/account'
 
 const StatusText = styled('p')`
   text-transform: lowercase;
@@ -64,6 +65,8 @@ const UserItem = ({ user, removeUser }) => {
     )
   }
 
+  console.log(user)
+
   return (
     <>
       <ListItem
@@ -72,7 +75,13 @@ const UserItem = ({ user, removeUser }) => {
       >
         <Box sx={{ display: 'flex' }}>
           <ListItemAvatar>
-            <Avatar />
+            <Avatar
+              src={
+                get(user, 'User.picture')
+                  ? get(user, 'User.picture')
+                  : accountDefault.photoURL
+              }
+            />
           </ListItemAvatar>
           <p>{get(user, 'User.username')}</p>
           {user.status === 'PENDING' && (
