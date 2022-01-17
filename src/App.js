@@ -23,7 +23,6 @@ function App() {
   useEffect(() => {
     if (!isEmpty(user)) {
       socket.connect()
-      console.log(user)
       establishNewConnection(user.id)
     }
   }, [user])

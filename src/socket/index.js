@@ -4,23 +4,6 @@ import { fetchNotifications } from 'src/redux/notificationSlice'
 
 let socketClient = io('http://localhost:5000')
 
-// export const initSocket = (server, userId) => {
-//   if (socketClient && socketClient.connected) return
-
-//   socketClient
-
-//   socketClient.on('connect', () => {
-//     console.log('socket connection established')
-//     socketClient.emit('new-user', userId)
-
-//     socketClient.on('notify', () => {
-//       store.dispatch(fetchNotifications())
-//     })
-//   })
-
-//   console.log(socketClient)
-// }
-
 socketClient.on('connect', () => {
   socketClient.on('notify', () => {
     store.dispatch(fetchNotifications())
